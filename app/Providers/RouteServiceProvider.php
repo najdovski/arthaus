@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
+    public const LOGIN = '/login';
+
     /**
      * The path to the "home" route for your application.
      *
@@ -17,7 +19,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/activities';
 
     /**
      * The controller namespace for the application.

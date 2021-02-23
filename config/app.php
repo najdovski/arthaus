@@ -2,6 +2,9 @@
 
 return [
 
+    // Custom
+    'registrations_allowed' => env('REGISTRATIONS_ALLOWED', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
