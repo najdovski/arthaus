@@ -24,7 +24,7 @@ class ActivitiesTableSeeder extends Seeder
             ->addMinutes(rand(0, 59))
             ->addSeconds(rand(0, 59));
 
-            $randomFinishedAt = $randomStartedAt
+            $randomFinishedAt = (new Carbon($randomStartedAt))
                 ->addHours(rand(0, 7))
                 ->addMinutes(rand(0, 59))
                 ->addSeconds(rand(0, 59));

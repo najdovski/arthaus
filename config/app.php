@@ -4,6 +4,7 @@ return [
 
     // Custom
     'registrations_allowed' => env('REGISTRATIONS_ALLOWED', false),
+    'pagination_items' => env('PAGINATION_ITEMS', 16),
 
     /*
     |--------------------------------------------------------------------------

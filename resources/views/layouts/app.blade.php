@@ -18,6 +18,9 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"/>
 </head>
 <body>
     <div id="app">
@@ -76,7 +79,29 @@
         </nav>
 
         <main class="container py-4">
-            @yield('content')
+          {{-- Error messages --}}
+          @if ($errors->any())
+          <div class="row my-3 justify-content-center">
+            <div class="col-12 text-center bg-danger py-1 rounded text-white font-weight-bold">
+              @foreach ($errors->all() as $error)
+                <div class="py-1 {{ !$loop->first ? 'border-top' : '' }} ">
+                  {{ $error }}
+                </div>
+              @endforeach
+            </div>
+          </div>
+          @endif
+          
+          {{-- Success messages --}}
+          @if (session('success') && array_key_exists('success', session('success')))
+          <div class="row my-3 justify-content-center">
+            <div class="col-12 text-center bg-success py-2 rounded text-white font-weight-bold">
+              {{ session('success')['success'] }}
+            </div>
+          </div>
+          @endif
+
+          @yield('content')
         </main>
     </div>
 </body>

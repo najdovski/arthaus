@@ -10,6 +10,18 @@ class Activity extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id',
+        'started_at',
+        'finished_at',
+        'description',
+    ];
+
+    /**
      * Get the user that created the activity
      */
     public function user()

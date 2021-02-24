@@ -147,6 +147,10 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'activity-id' => 'activity ID',
+        'started-at' => '"started at" field',
+        'finished-at' => '"finished at" field',
+    ],
 
 ];
