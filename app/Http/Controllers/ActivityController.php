@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Repositories\ActivityRepository;
 use App\Http\Requests\StoreUpdateActivityRequest;
+use App\Http\Requests\FilterActivitiesRequest;
+use App\Helpers\AppHelper;
 use Exception;
 
 class ActivityController extends Controller
@@ -17,22 +19,31 @@ class ActivityController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display activities
      *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(FilterActivitiesRequest $request)
     {
         try {
-            $activities = $this->activityObj->get();
+            if ($request->input('token')) {
+                $request = $this->activityObj->getRequestByToken($request->input('token'));
+                $guestListing = true;
+            }
+            $activities = $this->activityObj->get($request);
         } catch (Exception $exception) {
             $activities = [];
         }
 
+        $startedAt = $request->input('started-at') ? AppHelper::formatDateTimeInput($request->input('started-at')) : null;
+        $finishedAt = $request->input('finished-at') ? AppHelper::formatDateTimeInput($request->input('finished-at')) : null;
+
         return view(
             'activities.index',
             [
-                'activities' => $activities
+                'activities' => $activities,
+                'startedAt' => $startedAt,
+                'finishedAt' => $finishedAt,
+                'guestListing' => $guestListing ?? false,
             ]
         );
     }
@@ -57,7 +68,7 @@ class ActivityController extends Controller
             ->back()
             ->withInput()
             ->withErrors([
-                'error' => 'The activity couldn\'t be created. Try again',
+                'error' => 'The activity couldn\'t be created. Please try again',
             ]);
         }
 

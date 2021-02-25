@@ -8,7 +8,7 @@
   </div>
   <form
     id="activity-form"
-    class="row shadow rounded my-2 p-3"
+    class="row shadow rounded my-2 p-3 js--validate"
     action="{{ isset($activity) ? route('update-activity') : route('store-activity') }}"
     method="POST">
     @csrf
@@ -37,7 +37,7 @@
         type="datetime-local"
         name="finished-at"
         min="{{ isset($activity->started_at) ? \App\Helpers\AppHelper::formatDateTimeInput($activity->started_at) : \App\Helpers\AppHelper::formatDateTimeInput(now(), true) }}"
-        max="{{ old('started-at') ? old('started-at') : (isset($activity->started_at) ? \App\Helpers\AppHelper::formatDateTimeInput($activity->started_at) : \App\Helpers\AppHelper::formatDateTimeInput(now(), true)) }}"
+        max="{{ \App\Helpers\AppHelper::formatDateTimeInput(now(), true) }}"
         value="{{ old('finished-at') ? old('finished-at') : (isset($activity->finished_at) ? \App\Helpers\AppHelper::formatDateTimeInput($activity->finished_at) : '') }}"
         required>
     </div>

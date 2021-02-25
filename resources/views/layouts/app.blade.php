@@ -41,6 +41,11 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
+                        @auth
+                          <li class="nav-item">
+                              <a class="nav-link font-weight-bold" href="{{ route('activities') }}">Activities</a>
+                          </li>
+                        @endauth
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
@@ -104,5 +109,6 @@
           @yield('content')
         </main>
     </div>
+    @stack('scripts')
 </body>
 </html>

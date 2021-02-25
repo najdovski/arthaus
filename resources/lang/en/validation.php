@@ -149,8 +149,11 @@ return [
 
     'attributes' => [
         'activity-id' => 'activity ID',
-        'started-at' => '"started at" field',
-        'finished-at' => '"finished at" field',
+        'started-at' => 'started field',
+        'finished-at' => 'finished field',
+        'email-started-at' => 'started field',
+        'email-finished-at' => 'finished field',
+        'email-current-page' => 'current page',
     ],
 
 ];

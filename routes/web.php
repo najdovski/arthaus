@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\EmailShareController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +30,5 @@ Route::prefix('activities')->middleware('auth')->group(function() {
     Route::delete('/{id}', [ActivityController::class, 'destroy'])->name('remove-activity');
     //hasAccessToken middleware
 });
+
+Route::post('/email-share', [EmailShareController::class, 'index'])->middleware('auth')->name('email-share');

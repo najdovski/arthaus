@@ -1,5 +1,5 @@
 export default function main() {
-  const forms = document.querySelectorAll('form');
+  const forms = document.querySelectorAll('form.js--validate');
 
   // Bootstap form validation
   forms?.forEach(form => {

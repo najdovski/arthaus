@@ -15,11 +15,15 @@ class CreateActivityAccessTokensTable extends Migration
     {
         Schema::create('activity_access_tokens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('activity_id')
+            $table->foreignId('user_id')
             ->constrained()
             ->onUpdate('cascade')
             ->onDelete('cascade');
-            $table->dateTime('created_at');
+            $table->dateTime('started_at')->nullable();
+            $table->dateTime('finished_at')->nullable();
+            $table->string('email', 100);
+            $table->string('url_token', 255)->unique();
+            $table->dateTime('created_at')->useCurrent();
         });
     }
 
