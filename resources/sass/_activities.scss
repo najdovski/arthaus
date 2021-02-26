@@ -19,3 +19,9 @@
     background: linear-gradient(45deg,#FF5370,#ff869a);
   }
 }
+
+// Flatpickr styling
+.flatpickr-input + input {
+  cursor: pointer;
+  background: unset !important;
+}

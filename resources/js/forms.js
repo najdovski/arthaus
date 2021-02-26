@@ -1,3 +1,5 @@
+import flatpickrActivate from './flatpickrActivate';
+
 export default function main() {
   const forms = document.querySelectorAll('form.js--validate');
 
@@ -25,6 +27,7 @@ export default function main() {
     // Datetime validation
     const startedAtInput = form.querySelector('input[name="started-at"]');
     const finishedAtInput = form.querySelector('input[name="finished-at');
+    flatpickrActivate();
 
     if (!startedAtInput || !finishedAtInput) return;
 

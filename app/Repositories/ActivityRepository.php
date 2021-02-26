@@ -54,7 +54,7 @@ class ActivityRepository
         try {
             $activity = Activity::where([
                 ['id', '=', $id],
-                ['user_id', '=', $this->userId]
+                ['user_id', '=', auth()->user()->id]
             ])->first();
 
             return $activity;
