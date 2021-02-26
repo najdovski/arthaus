@@ -56,7 +56,7 @@
   </form>
   <div class="row justify-content-end mt-3">
     <div class="col-12 col-sm-6 col-md-4 col-lg-3 pl-0">
-      <a href="{{ route('activities') }}" class="btn btn-block btn-danger text-white font-weight-bold">Back</a>
+      <a href="{{ url()->previous() }}" class="btn btn-block btn-danger text-white font-weight-bold">Back</a>
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-3 pr-0">
       <button type="submit" form="activity-form" class="btn btn-block btn-success text-white font-weight-bold">Submit</button>

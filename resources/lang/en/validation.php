@@ -154,6 +154,8 @@ return [
         'email-started-at' => 'started field',
         'email-finished-at' => 'finished field',
         'email-current-page' => 'current page',
+        'start-date' => 'start date',
+        'end-date' => 'end date',
     ],
 
 ];

@@ -24,12 +24,14 @@ class ActivityController extends Controller
      */
     public function index(FilterActivitiesRequest $request)
     {
+        $storeIds = false;
         try {
             if ($request->input('token')) {
                 $request = $this->activityObj->getRequestByToken($request->input('token'));
                 $guestListing = true;
+                $storeIds = true;
             }
-            $activities = $this->activityObj->get($request);
+            $activities = $this->activityObj->get($request, $storeIds);
         } catch (Exception $exception) {
             $activities = [];
         }
@@ -37,9 +39,9 @@ class ActivityController extends Controller
         $startedAt = $request->input('started-at') ? AppHelper::formatDateTimeInput($request->input('started-at')) : null;
         $finishedAt = $request->input('finished-at') ? AppHelper::formatDateTimeInput($request->input('finished-at')) : null;
 
+
         return view(
-            'activities.index',
-            [
+            'activities.index', [
                 'activities' => $activities,
                 'startedAt' => $startedAt,
                 'finishedAt' => $finishedAt,
@@ -80,14 +82,25 @@ class ActivityController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified activity
      *
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Http\Response
      */
-    public function show(Activity $activity)
+    public function show(string $id)
     {
-        //
+        try {
+            $activity = $this->activityObj->getSingle($id);
+        } catch (Exception $exception) {
+            return redirect()
+            ->route('activities')
+            ->withInput()
+            ->withErrors([
+                'error' => 'The specified activity doesn\'t exist',
+            ]);
+        }
+
+        return view('activities.show', [
+            'activity' => $activity
+        ]);
     }
 
     /**
@@ -110,8 +123,7 @@ class ActivityController extends Controller
         }
 
         return view(
-            'activities.create-edit',
-            [
+            'activities.create-edit', [
                 'activity' => $activity
             ]
         );

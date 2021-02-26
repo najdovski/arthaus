@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 use App\Helpers\AccessTokenHelper;
+use App\Helpers\ActivitiesHelper;
 use Closure;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
@@ -11,7 +12,9 @@ class Authenticate extends Middleware
     // Overriding the handle method for allowing access with token
     public function handle($request, Closure $next, ...$guards)
     {
-        if ($this->auth->check() || AccessTokenHelper::checkToken($request)) {
+        if ($this->auth->check()
+            || AccessTokenHelper::checkToken($request)
+            || ActivitiesHelper::checkIfAllowed($request)) {
             return $next($request);
         } else {
             return redirect()->guest('login');

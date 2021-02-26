@@ -4,19 +4,19 @@
   }
 
   .activity-0 {
-    background: linear-gradient(45deg,#4099ff,#73b4ff);
+    background: linear-gradient($activities-bg-deg, $activity-0-start, $activity-0-end);
   }
 
   .activity-1 {
-    background: linear-gradient(45deg,#2ed8b6,#59e0c5);
+    background: linear-gradient($activities-bg-deg, $activity-1-start, $activity-1-end);
   }
 
   .activity-2 {
-    background: linear-gradient(45deg,#FFB64D,#ffcb80);
+    background: linear-gradient($activities-bg-deg, $activity-2-start, $activity-2-end);
   }
 
   .activity-3 {
-    background: linear-gradient(45deg,#FF5370,#ff869a);
+    background: linear-gradient($activities-bg-deg, $activity-3-start, $activity-3-end);
   }
 }
 

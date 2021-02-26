@@ -45,6 +45,9 @@
                           <li class="nav-item">
                               <a class="nav-link font-weight-bold" href="{{ route('activities') }}">Activities</a>
                           </li>
+                            <li class="nav-item">
+                                <a class="nav-link font-weight-bold" href="{{ route('reports') }}">Reports</a>
+                            </li>
                         @endauth
                         <!-- Authentication Links -->
                         @guest

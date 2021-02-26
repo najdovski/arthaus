@@ -49,15 +49,19 @@ class AppHelper
     /**
      * Format date and time for displaying
      */
-    public static function formatDateTime(string|null $dateTime): string
+    public static function formatDateTime(string|null $dateTime, bool $displayTime = true): string
     {
         if (!$dateTime) {
             return '-';
         }
 
-        $formated = (new DateTime($dateTime))->format('d-m-Y H:i');
+        $dateTimeObj = new DateTime($dateTime);
 
-        return $formated;
+        if ($displayTime) {
+            return $dateTimeObj->format('d F Y (H:i)');
+        } else {
+            return $dateTimeObj->format('d F Y');
+        }
     }
 
     /**
@@ -66,7 +70,7 @@ class AppHelper
     public static function formatDateTimeInput(string|null $dateTime, bool $setTimeZone = false): string
     {
         if (!$dateTime) {
-            return '-';
+            return '';
         }
 
         if ($setTimeZone) {
@@ -127,5 +131,16 @@ class AppHelper
         $now->setTimezone(new DateTimeZone($timezone));
 
         return $now;
+    }
+
+    /**
+     * 
+     */
+    public static function minToHours(int $inputMinutes): string
+    {
+        // Prepend zeros if the values are single integers
+        $hours = str_pad(intdiv($inputMinutes, 60), 2, '0', STR_PAD_LEFT);
+        $minutes = str_pad(($inputMinutes % 60), 2, '0', STR_PAD_LEFT);
+        return $hours.':'. $minutes;
     }
 }

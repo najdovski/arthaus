@@ -16,7 +16,7 @@
     <div class="row">
       <div class="col-12 mt-3">
         <form class="row js--validate" action="{{ route('activities') }}" method="GET">
-          <div class="form-group col-12 col-md-4 col-lg-3">
+          <div class="form-group col-12 col-md-4">
             <label for="started-at">Started after:</label>
             <input
             id="started-at"
@@ -26,8 +26,8 @@
             max="{{ \App\Helpers\AppHelper::formatDateTimeInput(now(), true) }}"
             value="{{ $startedAt ? $startedAt : '' }}">
           </div>
-          <div class="form-group col-12 col-md-4 col-lg-3">
-            <label for="started-at">Finished before:</label>
+          <div class="form-group col-12 col-md-4">
+            <label for="finished-at">Finished before:</label>
             <input
             id="finished-at"
             class="form-control"
@@ -36,7 +36,7 @@
             max="{{ \App\Helpers\AppHelper::formatDateTimeInput(now(), true) }}"
             value="{{ $finishedAt ? $finishedAt : \App\Helpers\AppHelper::formatDateTimeInput(now(), true) }}">
           </div>
-          <div class="form-group col-12 col-md-4 col-lg-3">
+          <div class="form-group col-12 col-md-4">
             <label for="submit-filter"></label>
             <input type="submit" id="submit-filter" class="btn btn-block btn-success text-white font-weight-bold mt-md-2" value="Filter">
           </div>
@@ -47,9 +47,11 @@
 
   @if (sizeof($activities) > 0)
     @if (!$guestListing)
-    <div class="row mb-3">
-      <div class="col-12 col-md-4 col-lg-3">
-        <button type="button" data-toggle="modal" data-target="#modal-email-share" class="btn btn-block btn-warning text-white font-weight-bold">Share by email</button>
+    <div class="row mb-3 justify-content-end">
+      <div class="col-12 col-md-auto">
+        <button type="button" data-toggle="modal" data-target="#modal-email-share" class="btn btn-block btn-warning text-white font-weight-bold">
+          <i class="fas fa-envelope-open-text mr-2"></i> Share by email
+        </button>
         @include('activities.partials.modal-email-share')
       </div>
     </div>
@@ -75,7 +77,9 @@
               </div>
             @endif
             <div class="col-12 font-weight-bold pb-2 text-break">
-              {{ \App\Helpers\AppHelper::trimString($activity->description) }}
+              <a class="text-white" href="{{ route('show-activity', ['id' => $activity->id]) }}">
+                {{ \App\Helpers\AppHelper::trimString($activity->description) }}
+              </a>
             </div>
             <div class="col-12 border-top pt-3 pb-2">
               <div class="row">

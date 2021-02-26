@@ -7,6 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Requests\FilterActivitiesRequest;
 use App\Helpers\AppHelper;
 use App\Models\ActivityAccessToken;
+use Illuminate\Support\Facades\Session;
 
 class ActivityRepository
 {
@@ -15,7 +16,7 @@ class ActivityRepository
     /**
      * Get activities
      */
-    public function get(FilterActivitiesRequest $request = null): LengthAwarePaginator
+    public function get(FilterActivitiesRequest $request = null, bool $storeIds = false): LengthAwarePaginator
     {
         $startedAt = $request && $request->input('started-at') ? $request->input('started-at') : '';
         $finishedAt = $request && $request->input('finished-at') ? $request->input('finished-at') : AppHelper::formatDateTimeInput(now(), true);
@@ -39,6 +40,27 @@ class ActivityRepository
             ->orderBy($orderBy, $orderType)
             ->with('user')
             ->paginate(config('app.pagination_items'));
+
+            if ($storeIds) {
+                $activitiesNoPagination = Activity::
+                where([
+                    ['user_id', $this->userId],
+                    ['started_at', '>=', $startedAt],
+                    ['started_at', '<=', AppHelper::formatDateTimeInput(now(), true)],
+                    ['finished_at', '<=', $finishedAt],
+                    ['finished_at', '<=', AppHelper::formatDateTimeInput(now(), true)],
+                ])
+                ->orderBy($orderBy, $orderType)
+                ->with('user')
+                ->get();
+        
+                $allowedActivityIds['activities'] = array_map(function ($activity) {
+                    return $activity['id'];
+                }, $activitiesNoPagination->toArray());
+                $allowedActivityIds['user_id'] = $this->userId;
+
+                Session::put('allowedActivityIds', $allowedActivityIds);
+            }
         } catch (Exception $exception) {
             throw $exception;
         }
@@ -49,12 +71,18 @@ class ActivityRepository
     /**
      * Get a single activity
      */
-    public function getSingle(string $id): Activity | null
+    public function getSingle(int $id): Activity | null
     {
+        if (Session::get('allowedActivityIds')) {
+            $userId = Session::get('allowedActivityIds')['user_id'];
+        } else {
+            $userId = $this->userId ? $this->userId : auth()->user()->id;
+        }
+
         try {
             $activity = Activity::where([
                 ['id', '=', $id],
-                ['user_id', '=', auth()->user()->id]
+                ['user_id', '=', $userId]
             ])->first();
 
             return $activity;
@@ -75,6 +103,7 @@ class ActivityRepository
                 'finished_at' => $request->input('finished-at'),
                 'description' => $request->input('description'),
             ]);
+            Session::forget('allActivities');
         } catch (Exception $exception) {
             throw $exception;
         }
@@ -91,6 +120,7 @@ class ActivityRepository
             $activity->started_at = $request->input('started-at');
             $activity->finished_at = $request->input('finished-at');
             $activity->save();
+            Session::forget('allActivities');
         } catch (Exception $exception) {
             throw $exception;
         }
@@ -110,6 +140,7 @@ class ActivityRepository
             if ($activity) {
                 $activity->delete();
             }
+            Session::forget('allActivities');
         } catch (Exception $exception) {
             throw $exception;
         }

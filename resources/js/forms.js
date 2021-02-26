@@ -1,4 +1,4 @@
-import flatpickrActivate from './flatpickrActivate';
+import { flatpickrActivateActivities, flatpickrActivateReports } from './flatpickrActivate';
 
 export default function main() {
   const forms = document.querySelectorAll('form.js--validate');
@@ -24,26 +24,28 @@ export default function main() {
       textArea.value = textArea.value.trim();
     }
 
+    flatpickrActivateActivities();
+    flatpickrActivateReports();
+
     // Datetime validation
-    const startedAtInput = form.querySelector('input[name="started-at"]');
-    const finishedAtInput = form.querySelector('input[name="finished-at');
-    flatpickrActivate();
+    // const startedAtInput = form.querySelector('input[name="started-at"]');
+    // const finishedAtInput = form.querySelector('input[name="finished-at');
 
-    if (!startedAtInput || !finishedAtInput) return;
+    // if (!startedAtInput || !finishedAtInput) return;
 
-    // Started at validation
-    startedAtInput.addEventListener('change', () => {
-      finishedAtInput.min = startedAtInput.value;
-    });
+    // // Started at validation
+    // startedAtInput.addEventListener('change', () => {
+    //   finishedAtInput.min = startedAtInput.value;
+    // });
 
-    // Finished at validation
-    finishedAtInput.addEventListener('change', () => {
-      const now = new Date();
-      const finishedAtInputDate = new Date(finishedAtInput.value);
+    // // Finished at validation
+    // finishedAtInput.addEventListener('change', () => {
+    //   const now = new Date();
+    //   const finishedAtInputDate = new Date(finishedAtInput.value);
 
-      if (finishedAtInputDate < now) {
-        startedAtInput.max = finishedAtInput.value;
-      }
-    });
+    //   if (finishedAtInputDate < now) {
+    //     startedAtInput.max = finishedAtInput.value;
+    //   }
+    // });
   });
 }

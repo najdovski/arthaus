@@ -6,6 +6,8 @@ return [
     'registrations_allowed' => env('REGISTRATIONS_ALLOWED', false),
     'pagination_items' => env('PAGINATION_ITEMS', 8),
     'email_sender' => env('MAIL_USERNAME'),
+    'token_lifetime_hours' => env('TOKEN_LIFETIME_HOURS'),
+    'reports_show_empty' => env('REPORTS_SHOW_EMPTY', false),
 
     /*
     |--------------------------------------------------------------------------
