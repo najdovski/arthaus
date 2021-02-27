@@ -13,6 +13,7 @@
           name="start-date"
           max="{{ \App\Helpers\AppHelper::formatDateTimeInput(now(), true) }}"
           value="{{ $startDate ? $startDate : '' }}"
+          required
           >
         </div>
         <div class="form-group col-12 col-md-4">
@@ -24,6 +25,7 @@
           name="end-date"
           max="{{ \App\Helpers\AppHelper::formatDateTimeInput(now(), true) }}"
           value="{{ $endDate ? $endDate : '' }}"
+          required
           >
         </div>
         <div class="form-group col-12 col-md-4">
@@ -41,7 +43,8 @@
   @if ($startDate && $endDate && $datesWithTotalTime)
   <div class="row">
     <div class="col-12 text-center mb-2">
-      Showing <span class="font-weight-bold">{{ sizeof($datesWithTotalTime) }}</span> results
+      Showing <span class="font-weight-bold">{{ sizeof($datesWithTotalTime) }}</span>
+      {{ sizeof($datesWithTotalTime) > 1 ? 'results' : 'result' }}
       between <span class="font-weight-bold">{{ \App\Helpers\AppHelper::formatDateTime($startDate, false) }}</span>
       and <span class="font-weight-bold">{{ \App\Helpers\AppHelper::formatDateTime($endDate, false) }}</span>
       for <span class="font-weight-bold">{{ auth()->user()->name }}</span>

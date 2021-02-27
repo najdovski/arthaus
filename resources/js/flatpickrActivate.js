@@ -6,30 +6,46 @@ export function flatpickrActivateActivities() {
 
   if (!initialStartAtElement || !initialFinishedAtElement) return;
 
+  let disabledDates = [];
+  const disabledDatesAttribute = initialStartAtElement.getAttribute('data-disabled-dates');
+  if (disabledDatesAttribute) {
+    disabledDates = disabledDatesAttribute.split(',');
+  }
+
   const startedAtFlatpickr = flatpickr('input[name="started-at"]', {
+    locale: {
+      firstDayOfWeek: 1
+    },
     enableTime: true,
     altInput: true,
     altFormat: 'j F Y (H:i)',
     dateFormat: 'Y-m-dTH:i',
     maxDate: initialStartAtElement.max,
     minDate: initialStartAtElement.min,
-    onChange: function(dateobj) {
+    allowInput:true,
+    onChange: dateobj => {
       const dateFormatted = formatDate(dateobj);
       finishedAtFlatpickr.set('minDate', dateFormatted);
     },
+    disable: disabledDates
   });
 
   const finishedAtFlatpickr = flatpickr('input[name="finished-at"]', {
+    locale: {
+      firstDayOfWeek: 1
+    },
     enableTime: true,
     altInput: true,
     altFormat: 'j F Y (H:i)',
     dateFormat: 'Y-m-dTH:i',
     maxDate: initialFinishedAtElement.max,
     minDate: initialFinishedAtElement.min,
-    onChange: (dateobj) => {
+    allowInput:true,
+    onChange: dateobj => {
       const dateFormatted = formatDate(dateobj);
       startedAtFlatpickr.set('maxDate', dateFormatted);
-    }
+    },
+    disable: disabledDates
   });
 }
 
@@ -40,24 +56,32 @@ export function flatpickrActivateReports() {
   if (!initialStartDate || !initialEndDate) return;
 
   const startDate = flatpickr('input[name="start-date"]', {
+    locale: {
+      firstDayOfWeek: 1
+    },
     altInput: true,
     altFormat: 'j F Y',
     dateFormat: 'Y-m-d',
     maxDate: initialStartDate.max,
     minDate: initialStartDate.min,
-    onChange: function(dateobj) {
+    allowInput:true,
+    onChange: dateobj => {
       const dateFormatted = formatDate(dateobj);
       finishedAtFlatpickr.set('minDate', dateFormatted);
     },
   });
 
   const finishedAtFlatpickr = flatpickr('input[name="end-date"]', {
+    locale: {
+      firstDayOfWeek: 1
+    },
     altInput: true,
     altFormat: 'j F Y',
     dateFormat: 'Y-m-d',
     maxDate: initialEndDate.max,
     minDate: initialEndDate.min,
-    onChange: (dateobj) => {
+    allowInput:true,
+    onChange: dateobj => {
       const dateFormatted = formatDate(dateobj);
       startDate.set('maxDate', dateFormatted);
     }

@@ -10035,5 +10035,5 @@ h3 {
 
 .flatpickr-input + input {
   cursor: pointer;
-  background: unset !important;
+  background: white !important;
 }

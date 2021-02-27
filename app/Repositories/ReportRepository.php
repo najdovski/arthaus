@@ -3,14 +3,10 @@
 namespace App\Repositories;
 
 use App\Http\Requests\FilterReportsRequest;
-use Illuminate\Support\Facades\Session;
-use App\Models\Activity;
 use App\Helpers\AppHelper;
-use Carbon\Carbon;
 use Exception;
-use DateTime;
-use DateInterval;
-use DatePeriod;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class ReportRepository
 {
@@ -24,25 +20,17 @@ class ReportRepository
 
         try {
             /**
-             * Why the query doesn't have a where clause for the dates?
+             * Why all the activities being fetched?
              * Because an activity can be started before the started_at date
              * and end in the range. Hence, will be impossible to identify the
              * time passed on the activity without fetching all the activities.
-             * For a larget application, it would be better to add a new table
+             * For a larger application, it would be better to add a new table
              * for days/time spent, so the query can be faster.
              * 
              * For the time being, they will be stored in a session
              */
-            $activities = Session::get('allActivities')
-            ? Session::get('allActivities') :
-            Activity::where([
-                ['user_id', auth()->user()->id]
-            ])
-            ->orderBy('started_at', 'ASC')
-            ->with('user')
-            ->get();
-
-            Session::put('allActivities', $activities);
+            $activityRepo = new ActivityRepository();
+            $activities = $activityRepo->getAllActivities();
         } catch (Exception $exception) {
             throw $exception;
         }
@@ -64,12 +52,32 @@ class ReportRepository
 
     private function groupByDay($activities, $startDate, $endDate, $inputStartDate, $inputEndDate): array
     {
-        // Make an array with all the possible dates between the start and end dates
-        $range = new DatePeriod(
-            new DateTime($startDate),
-            new DateInterval('P1D'),
-            new DateTime($endDate)
+
+        $datesWithTotalTime = $this->getAllDatesWithTotalTime(
+            $activities,
+            $startDate,
+            $endDate
         );
+
+        $filteredDatesWithTotalTime = array_filter($datesWithTotalTime, function ($date) use ($inputStartDate, $inputEndDate) {
+            $inputStartDate = (new Carbon($inputStartDate))->format('Y-m-d');
+            $inputEndDate = (new Carbon($inputEndDate))->format('Y-m-d');
+
+            if (($date >= $inputStartDate) && ($date <= $inputEndDate)) {
+                return true;
+            }
+        }, ARRAY_FILTER_USE_KEY);
+
+        return $filteredDatesWithTotalTime;
+    }
+
+    /**
+     * Get all dates with total time for each one
+     */
+    public function getAllDatesWithTotalTime($activities, $startDate, $endDate): array
+    {
+        // Make an array with all the possible dates between the start and end dates
+        $range = CarbonPeriod::create($startDate, $endDate);
 
         // Assign the dates as the array keys and zeros as values (total time spent)
         $datesWithTotalTime = [];
@@ -80,8 +88,8 @@ class ReportRepository
         // Check if there were any activities for a given date
         foreach ($datesWithTotalTime as $date => $totalTimeSpent) {
             foreach ($activities as $activity) {
-                $activityStartDate = (new DateTime($activity->started_at))->format('Y-m-d');
-                $activityEndDate = (new DateTime($activity->finished_at))->format('Y-m-d');
+                $activityStartDate = (new Carbon($activity->started_at))->format('Y-m-d');
+                $activityEndDate = (new Carbon($activity->finished_at))->format('Y-m-d');
 
                 // If date is between start and end, add 1440 minutes (24h)
                 if (($date > $activityStartDate) && ($date < $activityEndDate)) {
@@ -109,15 +117,6 @@ class ReportRepository
             }
         }
 
-        $filteredDatesWithTotalTime = array_filter($datesWithTotalTime, function ($date) use ($inputStartDate, $inputEndDate) {
-            $inputStartDate = (new DateTime($inputStartDate))->format('Y-m-d');
-            $inputEndDate = (new DateTime($inputEndDate))->format('Y-m-d');
-
-            if (($date >= $inputStartDate) && ($date <= $inputEndDate)) {
-                return true;
-            }
-        }, ARRAY_FILTER_USE_KEY);
-
-        return $filteredDatesWithTotalTime;
+        return $datesWithTotalTime;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Helpers\AppHelper;
+use App\Helpers\ActivitiesHelper;
 use Exception;
 use DateTime;
 
@@ -17,6 +18,17 @@ class StoreUpdateActivityRequest extends FormRequest
 
     public function rules()
     {
+        // Check if the date range is available
+        if (!ActivitiesHelper::dateRangeAvailable($this->request->get('started-at'), $this->request->get('finished-at'))) {
+            throw new HttpResponseException(
+                back()
+                ->withInput()
+                ->withErrors([
+                    'error' => 'The selected date range isn\'t available',
+                ])
+            );
+        }
+
         $activityIdRequired = '';
         if ($this->request->get('_method') === 'put') {
             $activityIdRequired = '|required';

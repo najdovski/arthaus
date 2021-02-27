@@ -16,7 +16,7 @@
       @method('put')
       <input type="hidden" name="activity-id" value="{{ $activity->id }}">
     @endisset
-
+    
     <div class="col-12 col-md-6 form-group">
       <label for="started-at">Started at:</label>
       <input
@@ -26,7 +26,9 @@
         name="started-at"
         max="{{ \App\Helpers\AppHelper::formatDateTimeInput(now(), true) }}"
         value="{{ old('started-at') ? old('started-at') : (isset($activity->started_at) ? \App\Helpers\AppHelper::formatDateTimeInput($activity->started_at) : '') }}"
-        required>
+        data-disabled-dates="{{ \App\Helpers\ActivitiesHelper::getDisabledDates() }}"
+        required
+        >
     </div>
 
     <div class="col-12 col-md-6 form-group">
@@ -36,9 +38,16 @@
         class="form-control"
         type="datetime-local"
         name="finished-at"
-        min="{{ isset($activity->started_at) ? \App\Helpers\AppHelper::formatDateTimeInput($activity->started_at) : \App\Helpers\AppHelper::formatDateTimeInput(now(), true) }}"
+        min="{{ 
+        old('started-at') ? old('started-at') :
+        (isset($activity->started_at) 
+        ? \App\Helpers\AppHelper::formatDateTimeInput($activity->started_at) 
+        : \App\Helpers\AppHelper::formatDateTimeInput(now(), true)) }}"
         max="{{ \App\Helpers\AppHelper::formatDateTimeInput(now(), true) }}"
-        value="{{ old('finished-at') ? old('finished-at') : (isset($activity->finished_at) ? \App\Helpers\AppHelper::formatDateTimeInput($activity->finished_at) : '') }}"
+        value="{{
+        old('finished-at') ? old('finished-at')
+        : (isset($activity->finished_at)
+        ? \App\Helpers\AppHelper::formatDateTimeInput($activity->finished_at) : '') }}"
         required>
     </div>
 

@@ -8,6 +8,7 @@ use App\Http\Requests\FilterActivitiesRequest;
 use App\Helpers\AppHelper;
 use App\Models\ActivityAccessToken;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Database\Eloquent\Collection;
 
 class ActivityRepository
 {
@@ -62,6 +63,32 @@ class ActivityRepository
                 Session::put('allowedActivityIds', $allowedActivityIds);
             }
         } catch (Exception $exception) {
+            throw $exception;
+        }
+
+        return $activities;
+    }
+
+    /**
+     * Get all activities for current user
+     */
+    public function getAllActivities(): Collection
+    {
+        if (Session::get('allActivities')) {
+            return Session::get('allActivities');
+        }
+
+        try {
+            $activities = Activity::where([
+                ['user_id', auth()->user()->id]
+            ])
+            ->orderBy('started_at', 'ASC')
+            ->with('user')
+            ->get();
+
+            Session::put('allActivities', $activities);
+        } catch (Exception $exception) {
+            
             throw $exception;
         }
 

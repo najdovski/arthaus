@@ -136,11 +136,13 @@ class AppHelper
     /**
      * 
      */
-    public static function minToHours(int $inputMinutes): string
+    public static function minToHours($inputMinutes): string
     {
+        $inputMinutes = round($inputMinutes);
+
         // Prepend zeros if the values are single integers
         $hours = str_pad(intdiv($inputMinutes, 60), 2, '0', STR_PAD_LEFT);
-        $minutes = str_pad(($inputMinutes % 60), 2, '0', STR_PAD_LEFT);
+        $minutes = str_pad((floor($inputMinutes) % 60), 2, '0', STR_PAD_LEFT);
         return $hours.':'. $minutes;
     }
 }
