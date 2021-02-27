@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">Login</div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
+                    <form class="js--validate" method="POST" action="{{ route('login') }}">
                         @csrf
 
                         <div class="form-group row">
@@ -38,7 +38,8 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        {{-- Hide remember me --}}
+                        <div class="form-group row d-none">
                             <div class="col-md-6 offset-md-4">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
