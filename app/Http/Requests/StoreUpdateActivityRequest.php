@@ -18,8 +18,26 @@ class StoreUpdateActivityRequest extends FormRequest
 
     public function rules()
     {
+        /**
+         * Check if the activity being edited exists and belongs to the current user,
+         * so it can be excluded from the unavailable date range
+         */
+        if ($this->request->get('activity-id')
+            && !ActivitiesHelper::activityExists($this->request->get('activity-id'))) {
+            throw new HttpResponseException(
+                back()
+                ->withInput()
+                ->withErrors([
+                    'error' => 'The activity you are trying to edit doesn\'t exist',
+                ])
+            );
+        }
+
         // Check if the date range is available
-        if (!ActivitiesHelper::dateRangeAvailable($this->request->get('started-at'), $this->request->get('finished-at'))) {
+        if (!ActivitiesHelper::dateRangeAvailable(
+            $this->request->get('started-at'),
+            $this->request->get('finished-at'),
+            $this->request->get('activity-id'))) {
             throw new HttpResponseException(
                 back()
                 ->withInput()

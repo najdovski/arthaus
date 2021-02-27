@@ -41,8 +41,8 @@ class ReportRepository
 
         $datesWithTotalTime = $this->groupByDay(
             $activities,
-            $activities[0]->started_at,
-            $activities[sizeof($activities) - 1]->finished_at,
+            $activities->first()->started_at,
+            $activities->last()->finished_at,
             $request->input('start-date'),
             $request->input('end-date')
         );

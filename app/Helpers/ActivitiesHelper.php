@@ -33,13 +33,20 @@ class ActivitiesHelper
     /**
      * Get all unavailable date ranges
      */
-    public static function getUnavailableDateRanges(): array
+    public static function getUnavailableDateRanges($excludeActivityId = null): array
     {
         $activitiesRepo = new ActivityRepository();
-        $allActivities = $activitiesRepo->getAllActivities();
+        $activities = $activitiesRepo->getAllActivities();
+
+        if ($excludeActivityId) {
+            $activities = $activities->reject(function($activity) use ($excludeActivityId) {
+                return $activity->id === (int)$excludeActivityId;
+            });
+        }
+
         $dateRanges = [];
-        foreach ($allActivities as $activity) {
-            $range['from'] = $activity->finished_at;
+        foreach ($activities as $activity) {
+            $range['from'] = $activity->started_at;
             $range['to'] = $activity->finished_at;
             array_push($dateRanges, $range);
         }
@@ -49,13 +56,13 @@ class ActivitiesHelper
     /**
      * Check if the date range is available for adding/editing an activity
      */
-    public static function dateRangeAvailable($startAt, $finishAt): bool
+    public static function dateRangeAvailable($startAt, $finishAt, $excludeActivityId = null): bool
     {
         if (!$startAt || !$finishAt) {
             return false;
         }
 
-        $unavailableRanges = self::getUnavailableDateRanges();
+        $unavailableRanges = self::getUnavailableDateRanges($excludeActivityId);
 
         if (!$unavailableRanges) {
             return true;
@@ -74,15 +81,26 @@ class ActivitiesHelper
     /**
      * Get fully unavailable/disabled dates (24h of activity)
      */
-    public static function getDisabledDates()
+    public static function getDisabledDates($excludeActivityId = null)
     {
         $reportRepo = new ReportRepository();
         $activitiesRepo = new ActivityRepository();
         $activities = $activitiesRepo->getAllActivities();
+
+        if ($excludeActivityId) {
+            $activities = $activities->reject(function($activity) use ($excludeActivityId) {
+                return $activity->id === $excludeActivityId;
+            });
+        }
+
+        if (sizeof($activities) < 1) {
+            return null;
+        }
+
         $allDatesWithTotalTime = $reportRepo->getAllDatesWithTotalTime(
             $activities,
-            $activities[0]->started_at,
-            $activities[sizeof($activities) - 1]->finished_at,
+            $activities->first()->started_at,
+            $activities->last()->finished_at,
         );
 
         $disabledDates = array_filter($allDatesWithTotalTime, function($minutes, $date) {
@@ -94,5 +112,25 @@ class ActivitiesHelper
         $json = str_replace('"', '', $json);
         $json = trim($json, '[]');
         return $json;
+    }
+
+    /**
+     * Check if the selected activity exists and belongs to the current user
+     */
+    public static function activityExists($activityId = null)
+    {
+        if (!$activityId) {
+            return true;
+        }
+
+        $activitiesRepo = new ActivityRepository();
+        $activities = $activitiesRepo->getAllActivities();
+        $findInCollection = $activities->where('id', $activityId);
+
+        if (sizeof($findInCollection) > 0) {
+            return true;
+        }
+
+        return false;
     }
 }

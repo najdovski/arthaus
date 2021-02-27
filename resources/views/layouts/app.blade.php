@@ -40,12 +40,13 @@
                     </ul>
 
                     <!-- Right Side Of Navbar -->
+                    @if (request()->path() !== '/')
                     <ul class="navbar-nav ml-auto">
                         @auth
-                          <li class="nav-item">
+                          <li class="nav-item {{ request()->path() === 'activities' ? 'active' : '' }}">
                               <a class="nav-link font-weight-bold" href="{{ route('activities') }}">Activities</a>
                           </li>
-                            <li class="nav-item">
+                            <li class="nav-item {{ request()->path() === 'reports' ? 'active' : '' }}">
                                 <a class="nav-link font-weight-bold" href="{{ route('reports') }}">Reports</a>
                             </li>
                         @endauth
@@ -82,6 +83,7 @@
                             </li>
                         @endguest
                     </ul>
+                    @endif
                 </div>
             </div>
         </nav>
@@ -112,6 +114,5 @@
           @yield('content')
         </main>
     </div>
-    @stack('scripts')
 </body>
 </html>

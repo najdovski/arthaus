@@ -16,7 +16,7 @@ class ActivitiesTableSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 0; $i < 200; $i++) {
+        for ($i = 0; $i < 60; $i++) {
             //random timestamp in the last year
             $randomStartedAt = Carbon::today()
             ->subDays(rand(0, 365))

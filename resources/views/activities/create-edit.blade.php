@@ -6,6 +6,37 @@
       'title' => isset($activity) ? 'Edit activity' : 'Create new activity'
     ])
   </div>
+  @if (\App\Helpers\ActivitiesHelper::getUnavailableDateRanges(isset($activity) ? $activity->id : null))
+  <div class="row">
+    <div class="col-12 px-0">
+      <button class="btn btn-danger font-weight-bold" data-toggle="collapse" href="#collapseExample" role="button">
+        Expand unavailable date ranges
+      </button>
+    </div>
+    <div class="col-12 collapse" id="collapseExample">
+      <div class="row mt-2">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">From</th>
+              <th scope="col">To</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach (\App\Helpers\ActivitiesHelper::getUnavailableDateRanges(isset($activity) ? $activity->id : null) as $date)
+            <tr>
+              <th>{{ $loop->iteration }}</th>
+              <td>{{ \App\Helpers\AppHelper::formatDateTime($date['from']) }}</td>
+              <td>{{ \App\Helpers\AppHelper::formatDateTime($date['to']) }}</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  @endif
   <form
     id="activity-form"
     class="row shadow rounded my-2 p-3 js--validate"
@@ -26,7 +57,7 @@
         name="started-at"
         max="{{ \App\Helpers\AppHelper::formatDateTimeInput(now(), true) }}"
         value="{{ old('started-at') ? old('started-at') : (isset($activity->started_at) ? \App\Helpers\AppHelper::formatDateTimeInput($activity->started_at) : '') }}"
-        data-disabled-dates="{{ \App\Helpers\ActivitiesHelper::getDisabledDates() }}"
+        data-disabled-dates="{{ \App\Helpers\ActivitiesHelper::getDisabledDates(isset($activity) ? $activity->id : null) }}"
         required
         >
     </div>
