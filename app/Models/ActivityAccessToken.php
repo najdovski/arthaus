@@ -23,11 +23,11 @@ class ActivityAccessToken extends Model
     ];
 
     /**
-     * Get the activity
+     * Get the user
      */
     public function user()
     {
-        return $this->belongsTo(Activity::class);
+        return $this->belongsTo(User::class);
     }
 
     // Disable timestamps

@@ -43,7 +43,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the activities for the user
+     * Get the activities for the selected user
      */
     public function activities()
     {
